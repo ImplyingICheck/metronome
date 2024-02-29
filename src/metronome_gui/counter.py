@@ -86,8 +86,14 @@ class BPMWidget(CounterWidget):
   def on_slider_change(self, value: str):
     self.update_count(int(value), absolute=True)
 
+  def increment(self):
+    if self.count < BPM_MAX:
+      self.update_count(1)
+    else:
+      self.update_count(BPM_MAX, absolute=True)
+
   def decrement(self):
-    if self.count > 1:
+    if self.count > BPM_MIN:
       self.update_count(-1)
     else:
       self.update_count(1, absolute=True)
