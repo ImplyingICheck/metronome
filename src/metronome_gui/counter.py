@@ -81,18 +81,13 @@ class BPMWidget(CounterWidget):
   def update_count(self, delta: int, absolute: bool = False):
     super().update_count(delta=delta, absolute=absolute)
     self.slider.set(self.count)
+    metronome_interface.update_bpm(self.count)
 
   def on_slider_change(self, value: str):
     self.update_count(int(value), absolute=True)
-
-  def increment(self):
-    super().increment()
-    metronome_interface.update_bpm(self.count)
 
   def decrement(self):
     if self.count > 1:
       self.update_count(-1)
     else:
       self.update_count(1, absolute=True)
-      return
-    metronome_interface.update_bpm(self.count)
