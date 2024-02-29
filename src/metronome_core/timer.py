@@ -2,7 +2,7 @@
 compared to common time and scaled appropriately."""
 import math
 
-from metronome import notes
+from metronome_core import notes
 
 COMMON_TIME = 4
 

@@ -2,8 +2,8 @@
 
 import pytest
 
-from metronome import timer
-from metronome import notes
+from metronome_core import timer
+from metronome_core import notes
 
 
 @pytest.fixture
