@@ -1,6 +1,8 @@
 """Display, which increments and decrements a value."""
 import tkinter as tk
 
+from metronome_core import metronome_interface
+
 
 class CounterWidget:
   """Tracks a value "count" and allows user input to decrease and increase the
@@ -36,3 +38,19 @@ class CounterWidget:
   def decrement(self):
     self.count -= 1
     self.count_label.config(text=str(self.count))
+
+
+class BPMWidget(CounterWidget):
+  """Adds callbacks to the metronome model."""
+
+  def increment(self):
+    super().increment()
+    metronome_interface.update_bpm(self.count)
+
+  def decrement(self):
+    if self.count > 1:
+      self.count -= 1
+    else:
+      self.count = 1
+      return
+    metronome_interface.update_bpm(self.count)
