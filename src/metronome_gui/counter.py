@@ -31,13 +31,16 @@ class CounterWidget:
     )
     self.decrement_button.pack()
 
+  def update_label(self):
+    self.count_label.config(text=str(self.count))
+
   def increment(self):
     self.count += 1
-    self.count_label.config(text=str(self.count))
+    self.update_label()
 
   def decrement(self):
     self.count -= 1
-    self.count_label.config(text=str(self.count))
+    self.update_label()
 
 
 class BPMWidget(CounterWidget):
@@ -53,4 +56,5 @@ class BPMWidget(CounterWidget):
     else:
       self.count = 1
       return
+    self.update_label()
     metronome_interface.update_bpm(self.count)
