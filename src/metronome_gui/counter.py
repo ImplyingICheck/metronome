@@ -46,6 +46,17 @@ class CounterWidget:
 class BPMWidget(CounterWidget):
   """Adds callbacks to the metronome model."""
 
+  def __init__(
+      self,
+      master: tk.Tk,
+      count: int = 0,
+      increment_text: str = "Increment",
+      decrement_text: str = "Decrement",
+  ):
+    super().__init__(master, count, increment_text, decrement_text)
+    self.count = 1
+    self.update_label()
+
   def increment(self):
     super().increment()
     metronome_interface.update_bpm(self.count)
