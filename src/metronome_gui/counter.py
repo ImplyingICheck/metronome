@@ -16,7 +16,7 @@ class CounterWidget:
       decrement_text: str = "Decrement",
   ):
     self.master = master
-    self.count = count
+    self._count = count
 
     self.count_label = tk.Label(master, text=str(self.count))
     self.count_label.pack()
@@ -31,16 +31,24 @@ class CounterWidget:
     )
     self.decrement_button.pack()
 
-  def update_label(self):
+  @property
+  def count(self):
+    return self._count
+
+  def update_count(self, delta: int, absolute: bool = False):
+    """This function should always be called using super() as update_count()
+    handles updating the view after updating the count property."""
+    if absolute:
+      self._count = delta
+    else:
+      self._count += delta
     self.count_label.config(text=str(self.count))
 
   def increment(self):
-    self.count += 1
-    self.update_label()
+    self.update_count(1)
 
   def decrement(self):
-    self.count -= 1
-    self.update_label()
+    self.update_count(-1)
 
 
 class BPMWidget(CounterWidget):
@@ -54,8 +62,7 @@ class BPMWidget(CounterWidget):
       decrement_text: str = "Decrement",
   ):
     super().__init__(master, count, increment_text, decrement_text)
-    self.count = 1
-    self.update_label()
+    self.update_count(1, absolute=True)
 
   def increment(self):
     super().increment()
@@ -63,9 +70,8 @@ class BPMWidget(CounterWidget):
 
   def decrement(self):
     if self.count > 1:
-      self.count -= 1
+      self.update_count(-1)
     else:
-      self.count = 1
+      self.update_count(1, absolute=True)
       return
-    self.update_label()
     metronome_interface.update_bpm(self.count)
