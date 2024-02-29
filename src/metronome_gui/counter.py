@@ -35,6 +35,9 @@ class CounterWidget:
   def count(self):
     return self._count
 
+  def update_label(self):
+    self.count_label.config(text=str(self.count))
+
   def update_count(self, delta: int, absolute: bool = False):
     """This function should always be called using super() as update_count()
     handles updating the view after updating the count property."""
@@ -42,7 +45,7 @@ class CounterWidget:
       self._count = delta
     else:
       self._count += delta
-    self.count_label.config(text=str(self.count))
+    self.update_label()
 
   def increment(self):
     self.update_count(1)
