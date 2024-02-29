@@ -4,5 +4,5 @@ from metronome_gui import counter
 
 if __name__ == "__main__":
   metronome = tkinter.Tk()
-  counter_widget = counter.CounterWidget(metronome)
+  counter_widget = counter.BPMWidget(metronome)
   metronome.mainloop()
