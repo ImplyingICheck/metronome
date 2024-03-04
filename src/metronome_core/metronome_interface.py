@@ -10,5 +10,5 @@ def update_bpm(bpm: int):
   raise NotImplementedError
 
 
-def update_playback_status(state: play_button.State):
+def update_playback_status(state: play_button.PlaybackState):
   raise NotImplementedError

@@ -7,7 +7,7 @@ _PAUSE_TEXT = "Paused"
 _PLAY_TEXT = "Playing"
 
 
-class State(Enum):
+class PlaybackState(Enum):
   PAUSE = 1
   PLAY = 2
 
@@ -16,19 +16,19 @@ class PlayButton:
   """View for displaying playback status of the metronome."""
 
   def __init__(self, master: tk.Tk):
-    self._state = State.PAUSE
+    self._state = PlaybackState.PAUSE
     self.button = tk.Button(master, text=_PAUSE_TEXT, command=self.toggle_state)
     self.button.pack()
 
   @property
-  def state(self) -> State:
+  def state(self) -> PlaybackState:
     return self._state
 
   def toggle_state(self):
-    if self.state == State.PAUSE:
-      self._state = State.PLAY
+    if self.state == PlaybackState.PAUSE:
+      self._state = PlaybackState.PLAY
       self.button.config(text=_PLAY_TEXT)
-    elif self.state == State.PLAY:
-      self._state = State.PAUSE
+    elif self.state == PlaybackState.PLAY:
+      self._state = PlaybackState.PAUSE
       self.button.config(text=_PAUSE_TEXT)
     metronome_interface.update_playback_status(self.state)
