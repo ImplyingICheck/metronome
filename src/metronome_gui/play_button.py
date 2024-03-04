@@ -13,3 +13,7 @@ class PlayButton:
   def __init__(self, master: tk.Tk):
     self._state = State.PAUSE
     self.button = tk.Button(master)
+
+  @property
+  def state(self) -> State:
+    return self._state
