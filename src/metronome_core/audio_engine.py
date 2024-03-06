@@ -6,14 +6,6 @@ import numpy as np
 import sounddevice
 
 
-def _generate_sine_wave(frequency: float, duration: float, sample_rate: int):
-  time_array = np.linspace(0, duration, int(sample_rate * duration)).astype(
-      dtype="float32"
-  )
-  wave = np.sin(2 * np.pi * frequency * time_array)
-  return wave
-
-
 class AudioEngine:
   """Can be used in a context manager or using the start() close() methods."""
 
@@ -55,10 +47,17 @@ class AudioEngine:
   def close(self, ignore_errors: bool = True):
     self.output_stream.close(ignore_errors)
 
+  def _generate_sine_wave(self, frequency: float, duration: float):
+    time_array = np.linspace(
+        0, duration, int(self.sample_rate * duration), dtype="float32"
+    )
+    wave = np.sin(2 * np.pi * frequency * time_array)
+    return wave
+
   def play_sound(
       self, frequency: float, duration: float = 1, volume: float = 0.1
   ):
-    waveform = _generate_sine_wave(frequency, duration, self.sample_rate)
+    waveform = self._generate_sine_wave(frequency, duration)
     scaled_waveform = volume * waveform
     try:
       self.output_stream.write(scaled_waveform)
