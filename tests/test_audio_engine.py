@@ -54,3 +54,22 @@ def test_generate_sine_wave_frequency_matches(
   peak_frequency = extract_peak_frequency(output)
   expected_frequency = frequency_440
   assert peak_frequency == expected_frequency
+
+
+def test_generate_silence_length_one_second(engine_44100_1_channel):
+  (
+      engine,
+      sample_rate,
+      _,
+  ) = engine_44100_1_channel  # sample_rate, channels unused
+  duration = 1
+  output = engine._generate_silence(duration=duration)
+  expected_length = sample_rate * duration
+  assert len(output) == expected_length
+
+
+def test_generate_silence_frequency_zero(engine_44100_1_channel):
+  engine, _, _ = engine_44100_1_channel  # sample_rate, channels unused
+  duration = 1
+  output = engine._generate_silence(duration=duration)
+  assert all(frequency == 0 for frequency in output)
