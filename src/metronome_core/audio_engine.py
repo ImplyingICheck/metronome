@@ -54,6 +54,9 @@ class AudioEngine:
     wave = np.sin(2 * np.pi * frequency * time_array)
     return wave
 
+  def _generate_silence(self, duration: float):
+    return np.linspace(0, 0, int(self.sample_rate * duration), dtype="float32")
+
   def play_sound(
       self, frequency: float, duration: float = 1, volume: float = 0.1
   ):
