@@ -1,10 +1,14 @@
 # pylint: disable=[missing-module-docstring, missing-class-docstring, protected-access, redefined-outer-name]
+import itertools
+import math
 
 from numpy.typing import ArrayLike
 
 import pytest
 import numpy as np
 from metronome_core import audio_engine
+
+SECONDS_PER_MINUTE = 60
 
 
 @pytest.fixture
@@ -26,6 +30,22 @@ def engine_44100_2_channel():
 @pytest.fixture
 def frequency_440():
   return 440
+
+
+@pytest.fixture
+def rhythm_quarter_note_common_time_60_bpm(frequency_440):
+  """A quarter note is 1 second long at 60 bpm."""
+  bpm = 60
+  bottom_number = 4
+  sample_length = round(
+      bpm * bottom_number / SECONDS_PER_MINUTE
+  )  # Resolves to 4
+  beat = [
+      audio_engine.Wave(frequency_440, 0.25),
+      audio_engine.Wave(frequency_440, 0.75),
+  ]
+  measure = itertools.islice(itertools.cycle(beat), len(beat) * bottom_number)
+  return list(measure), sample_length
 
 
 def test_generate_sine_wave_time_length_one_second(
@@ -73,3 +93,13 @@ def test_generate_silence_frequency_zero(engine_44100_1_channel):
   duration = 1
   output = engine._generate_silence(duration=duration)
   assert all(frequency == 0 for frequency in output)
+
+
+def test_create_rhythm_sound_length_4_seconds(
+    engine_44100_1_channel, rhythm_quarter_note_common_time_60_bpm
+):
+  engine, sample_rate, _ = engine_44100_1_channel
+  rhythm, expected_length = rhythm_quarter_note_common_time_60_bpm
+  waveform = engine.create_rhythm_waveform(rhythm=rhythm)
+  actual_length = len(waveform) / sample_rate
+  assert math.isclose(actual_length, expected_length)
