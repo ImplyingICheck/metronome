@@ -81,18 +81,7 @@ class AudioEngine:
     axis = 0 if self.channels == 1 else 1
     return np.concatenate(waveforms, axis=axis)
 
-  def play_sound(
-      self, frequency: float, duration: float = 1, volume: float = 0.1
-  ):
-    waveform = self._generate_sine_wave(frequency, duration)
+  def play_sound(self, rhythm: Iterable[Wave], volume: float = 0.1) -> None:
+    waveform = self.create_rhythm_waveform(rhythm)
     scaled_waveform = volume * waveform
-    try:
-      self.output_stream.write(scaled_waveform)
-    except sounddevice.PortAudioError as e:
-      if e.args[1] == -9983:
-        raise AttributeError(
-            f"{self.__class__} output_stream was not initialized. Use a"
-            f" context manager or the start() and close() methods."
-        ) from None
-      else:
-        raise e from None
+    sounddevice.play(scaled_waveform, self.sample_rate, loop=True)
