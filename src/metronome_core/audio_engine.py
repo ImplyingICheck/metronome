@@ -33,9 +33,6 @@ class AudioEngine:
       ]
     self._sample_rate = sample_rate
     self._channels = channels
-    self.output_stream = sounddevice.OutputStream(
-        sample_rate, channels=channels
-    )
 
   @property
   def sample_rate(self) -> int:
