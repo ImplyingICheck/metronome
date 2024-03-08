@@ -31,16 +31,8 @@ class AudioEngine:
       sample_rate = sounddevice.query_devices(kind="output")[
           "default_samplerate"
       ]
-    self._sample_rate = sample_rate
-    self._channels = channels
-
-  @property
-  def sample_rate(self) -> int:
-    return self._sample_rate
-
-  @property
-  def channels(self) -> int:
-    return self._channels
+    self.sample_rate = sample_rate
+    self.channels = channels
 
   def _generate_sine_wave(self, frequency: float, duration: float) -> Waveform:
     time_array = np.linspace(
