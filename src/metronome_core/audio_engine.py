@@ -6,7 +6,6 @@ import sounddevice
 import dataclasses
 
 from collections.abc import Iterable
-from types import TracebackType
 from typing import TYPE_CHECKING, TypeAlias
 
 if TYPE_CHECKING:
@@ -20,7 +19,7 @@ class Wave:
 
 
 class AudioEngine:
-  """Can be used in a context manager or using the start() close() methods."""
+  """Generates playback audio given a rhythm."""
 
   def __init__(self, sample_rate: int | None = None, channels: int = 1):
     if not sample_rate:
@@ -40,25 +39,6 @@ class AudioEngine:
   @property
   def channels(self) -> int:
     return self._channels
-
-  def __enter__(self):
-    self.start()
-    return self
-
-  def __exit__(
-      self,
-      exc_type: BaseException,
-      exc_val: BaseException,
-      exc_tb: TracebackType,
-  ) -> None | bool:
-    self.close()
-    return True
-
-  def start(self):
-    self.output_stream.start()
-
-  def close(self, ignore_errors: bool = True):
-    self.output_stream.close(ignore_errors)
 
   def _generate_sine_wave(self, frequency: float, duration: float) -> Waveform:
     time_array = np.linspace(
