@@ -285,7 +285,7 @@ def wait(ignore_errors=...): # -> CallbackFlags | None:
     """
     ...
 
-def stop(ignore_errors=...): # -> None:
+def stop(ignore_errors=...) -> None:
     """Stop playback/recording.
 
     This only stops `play()`, `rec()` and `playrec()`, but has no

@@ -18,6 +18,11 @@ class Wave:
   duration: float
 
 
+def stop_playback() -> None:
+  """Stops all playback from any AudioEngine currently playing."""
+  sounddevice.stop()
+
+
 class AudioEngine:
   """Generates playback audio given a rhythm."""
 
