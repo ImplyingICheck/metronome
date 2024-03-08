@@ -1,72 +1,61 @@
 """Interface with sounddevice package. Creates a persistent output buffer to
 which data representing sound can be written."""
-from types import TracebackType
-
+from __future__ import annotations
 import numpy as np
 import sounddevice
+import dataclasses
+
+from collections.abc import Iterable
+from typing import TYPE_CHECKING, TypeAlias
+
+if TYPE_CHECKING:
+  Waveform: TypeAlias = np.ndarray[tuple[int], np.dtype[np.float32]]
 
 
-def _generate_sine_wave(frequency: float, duration: float, sample_rate: int):
-  time_array = np.linspace(0, duration, int(sample_rate * duration)).astype(
-      dtype="float32"
-  )
-  wave = np.sin(2 * np.pi * frequency * time_array)
-  return wave
+@dataclasses.dataclass
+class Wave:
+  frequency: int
+  duration: float
+
+
+def stop_playback() -> None:
+  """Stops all playback from any AudioEngine currently playing."""
+  sounddevice.stop()
 
 
 class AudioEngine:
-  """Can be used in a context manager or using the start() close() methods."""
+  """Generates playback audio given a rhythm."""
 
   def __init__(self, sample_rate: int | None = None, channels: int = 1):
     if not sample_rate:
       sample_rate = sounddevice.query_devices(kind="output")[
           "default_samplerate"
       ]
-    self._sample_rate = sample_rate
-    self._channels = channels
-    self.output_stream = sounddevice.OutputStream(
-        sample_rate, channels=channels
+    self.sample_rate = sample_rate
+    self.channels = channels
+
+  def _generate_sine_wave(self, frequency: float, duration: float) -> Waveform:
+    time_array = np.linspace(
+        0, duration, int(self.sample_rate * duration), dtype="float32"
     )
+    wave = np.sin(2 * np.pi * frequency * time_array)
+    return wave
 
-  @property
-  def sample_rate(self) -> int:
-    return self._sample_rate
+  def _generate_silence(self, duration: float) -> Waveform:
+    return np.linspace(0, 0, int(self.sample_rate * duration), dtype="float32")
 
-  @property
-  def channels(self) -> int:
-    return self._channels
-
-  def __enter__(self):
-    self.start()
-    return self
-
-  def __exit__(
-      self,
-      exc_type: BaseException,
-      exc_val: BaseException,
-      exc_tb: TracebackType,
-  ) -> None | bool:
-    self.close()
-    return True
-
-  def start(self):
-    self.output_stream.start()
-
-  def close(self, ignore_errors: bool = True):
-    self.output_stream.close(ignore_errors)
-
-  def play_sound(
-      self, frequency: float, duration: float = 1, volume: float = 0.1
-  ):
-    waveform = _generate_sine_wave(frequency, duration, self.sample_rate)
-    scaled_waveform = volume * waveform
-    try:
-      self.output_stream.write(scaled_waveform)
-    except sounddevice.PortAudioError as e:
-      if e.args[1] == -9983:
-        raise AttributeError(
-            f"{self.__class__} output_stream was not initialized. Use a"
-            f" context manager or the start() and close() methods."
-        ) from None
+  def create_rhythm_waveform(self, rhythm: Iterable[Wave]) -> Waveform:
+    waveforms: list[Waveform] = []
+    for index, note in enumerate(rhythm):
+      if index % 2 == 0:
+        waveform = self._generate_sine_wave(note.frequency, note.duration)
       else:
-        raise e from None
+        waveform = self._generate_silence(note.duration)
+      waveforms.append(waveform)
+    axis = 0 if self.channels == 1 else 1
+    return np.concatenate(waveforms, axis=axis)
+
+  def play_sound(self, rhythm: Iterable[Wave], volume: float = 0.1) -> None:
+    waveform = self.create_rhythm_waveform(rhythm)
+    scaled_waveform = volume * waveform
+    sounddevice.play(scaled_waveform, self.sample_rate, loop=True)

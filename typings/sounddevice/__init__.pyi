@@ -40,7 +40,7 @@ _lib = ...
 _sampleformats = ...
 _initialized = ...
 _last_callback = ...
-def play(data, samplerate=..., mapping=..., blocking=..., loop=..., **kwargs): # -> None:
+def play(data: Any, samplerate=..., mapping=..., blocking=..., loop=..., **kwargs: Any) -> None:
     """Play back a NumPy array containing audio data.
 
     This is a convenience function for interactive use and for small
@@ -285,7 +285,7 @@ def wait(ignore_errors=...): # -> CallbackFlags | None:
     """
     ...
 
-def stop(ignore_errors=...): # -> None:
+def stop(ignore_errors=...) -> None:
     """Stop playback/recording.
 
     This only stops `play()`, `rec()` and `playrec()`, but has no
