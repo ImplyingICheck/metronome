@@ -40,3 +40,9 @@ def test_to_waves_common_time_quarter_notes_silence_between_notes():
   for index, wave in enumerate(waves):
     if index % 2 == 1:
       assert wave.frequency == 0
+
+
+def test_to_waves_common_time_quarter_notes_silence_at_end():
+  waves = [audio_engine.Wave(440, 0.25), audio_engine.Wave(0, 0.75)] * 4
+  final_wave = waves[-1]
+  assert final_wave.frequency == 0
