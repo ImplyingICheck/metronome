@@ -33,3 +33,10 @@ def test_to_waves_common_time_quarter_notes(quarter_note_60_bpm_note_sequence):
   note_sequence = quarter_note_60_bpm_note_sequence
   actual = note_sequence.to_waves()
   assert actual == expected
+
+
+def test_to_waves_common_time_quarter_notes_silence_between_notes():
+  waves = [audio_engine.Wave(440, 0.25), audio_engine.Wave(0, 0.75)] * 4
+  for index, wave in enumerate(waves):
+    if index % 2 == 1:
+      assert wave.frequency == 0
