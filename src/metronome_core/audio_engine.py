@@ -46,8 +46,8 @@ class AudioEngine:
 
   def create_rhythm_waveform(self, rhythm: Iterable[Wave]) -> Waveform:
     waveforms: list[Waveform] = []
-    for index, note in enumerate(rhythm):
-      if index % 2 == 0:
+    for note in rhythm:
+      if note.frequency != 0:
         waveform = self._generate_sine_wave(note.frequency, note.duration)
       else:
         waveform = self._generate_silence(note.duration)
