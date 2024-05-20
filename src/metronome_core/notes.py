@@ -10,6 +10,7 @@ NoteValue: TypeAlias = float | int
 
 SECONDS_PER_MINUTE = 60
 CONCERT_PITCH = 440
+SILENCE_PITCH = 0
 BEAT_DIVISOR = 1 / 4
 BEAT_DIVISOR_COMPLIMENT = 1 - BEAT_DIVISOR
 
@@ -51,7 +52,7 @@ class NoteSequence:
       accent = audio_engine.Wave(CONCERT_PITCH, total_duration * BEAT_DIVISOR)
       waves.append(accent)
       silence = audio_engine.Wave(
-          CONCERT_PITCH, total_duration * BEAT_DIVISOR_COMPLIMENT
+          SILENCE_PITCH, total_duration * BEAT_DIVISOR_COMPLIMENT
       )
       waves.append(silence)
     return waves
